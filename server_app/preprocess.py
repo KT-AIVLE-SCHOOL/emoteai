@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import librosa
 import pickle
+from tensorflow.keras.layers import LeakyReLU
 from tensorflow.keras.models import load_model
 
 def feature_extractor_40(audio_file):
@@ -72,7 +73,7 @@ def process2(audio):
 
 def model1(mfcc_features):
     model_path = './artifacts/first_model_sim1.keras'
-    model = load_model(model_path)  # 모델 로드
+    model = load_model(model_path, custom_objects={'LeakyReLU': LeakyReLU})  # 모델 로드
     
     pred = model.predict(np.array([mfcc_features]))  # 예측 수행
     pred_class = (pred > 0.5).astype(int)  # 확률값을 이진 분류로 변환
@@ -86,7 +87,7 @@ def model1(mfcc_features):
 
 def model2(mfcc_features):
     model_path = './artifacts/second_model_sim2_mfcc80.keras'
-    model = load_model(model_path) 
+    model = load_model(model_path, custom_objects={'LeakyReLU': LeakyReLU}) 
     label_path = './artifacts/second_model_label_encoder.pkl'
     with open(label_path, 'rb') as f:
         label_encoder = pickle.load(f)
